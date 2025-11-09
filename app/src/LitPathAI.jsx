@@ -10,14 +10,15 @@ import {
     MessageSquare,
     ArrowRight
 } from 'lucide-react';
-import dostLogo from "./components/images/dost-logo.png";
-
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import dostLogo from "./components/images/dost-logo.png"; // Adjust path as needed
+import AdminDashboard from './components/AdminDashboard'; // Import the new dashboard
 
 // Backend API URL 
 const API_BASE_URL = 'http://localhost:5000';
 
-
-const LitPathAI = () => {
+// --- Nested Component: Contains the main LitPath Search UI ---
+const LitPathSearchUI = () => {
     // --- State from Original ---
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedSubject, setSelectedSubject] = useState('All subjects');
@@ -34,14 +35,14 @@ const LitPathAI = () => {
     const [error, setError] = useState(null);
     const [backendStatus, setBackendStatus] = useState(null);
 
-    // --- State from Updated (for Login/Signup) ---
+    // --- State for Login/Signup ---
     const [showLogin, setShowLogin] = useState(false);
-    const [isLoginMode, setIsLoginMode] = useState(true); // toggle login/signup
+    const [isLoginMode, setIsLoginMode] = useState(true);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
 
-    // --- Data from Original ---
+    // --- Data from Original (Constants) ---
     const subjects = [
         "All subjects", "Agriculture", "Anthropology", "Applied Sciences", "Architecture",
         "Arts and Humanities", "Biological Sciences", "Business", "Chemistry",
@@ -54,28 +55,25 @@ const LitPathAI = () => {
     const dateOptions = ['All dates', 'Last year', 'Last 3 years', 'Custom date range'];
 
 
-    // --- Refs from Original ---
+    // --- Refs ---
     const subjectDropdownRef = useRef(null);
     const dateDropdownRef = useRef(null);
-    // --- Ref from Updated ---
     const loginRef = useRef(null);
+    const navigate = useNavigate();
 
-    // --- useEffect from Original (Health Check) ---
+    // --- Effects ---
     useEffect(() => {
         checkBackendHealth();
     }, []);
 
-    // --- Merged useEffect (Click Outside) ---
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Original logic
             if (subjectDropdownRef.current && !subjectDropdownRef.current.contains(event.target)) {
                 setShowSubjectDropdown(false);
             }
             if (dateDropdownRef.current && !dateDropdownRef.current.contains(event.target)) {
                 setShowDateDropdown(false);
             }
-            // Updated logic
             if (loginRef.current && !loginRef.current.contains(event.target)) {
                 setShowLogin(false);
             }
@@ -85,10 +83,10 @@ const LitPathAI = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []); // Dependencies are correct, they shouldn't include refs
+    }, []);
 
-    // --- Functions from Original ---
-    const checkBackendHealth = async () => {
+    // --- Functions (Original RAG Logic) ---
+    const checkBackendHealth = async () => { /* ... (Function content omitted for brevity, identical to previous turn) ... */
         try {
             const response = await fetch(`${API_BASE_URL}/health`);
             if (response.ok) {
@@ -103,7 +101,7 @@ const LitPathAI = () => {
         }
     };
 
-    const handleSearch = async (query = searchQuery) => {
+    const handleSearch = async (query = searchQuery) => { /* ... (Function content omitted for brevity, identical to previous turn) ... */
         if (!query.trim()) {
             setError("Please enter a research question.");
             return;
@@ -122,9 +120,7 @@ const LitPathAI = () => {
         try {
             const response = await fetch(`${API_BASE_URL}/search`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     question: query,
                     subject: selectedSubject === 'All subjects' ? null : selectedSubject,
@@ -169,20 +165,20 @@ const LitPathAI = () => {
         }
     };
 
-    const handleExampleQuestionClick = (question) => {
+    const handleExampleQuestionClick = (question) => { /* ... (Function content omitted for brevity) ... */
         setSearchQuery(question);
         handleSearch(question);
     };
 
-    const handleSourceClick = (source) => {
+    const handleSourceClick = (source) => { /* ... (Function content omitted for brevity) ... */
         setSelectedSource(source);
     };
 
-    const handleMoreDetails = () => {
+    const handleMoreDetails = () => { /* ... (Function content omitted for brevity) ... */
         setShowOverlay(true);
     };
 
-    const handleNewChat = () => {
+    const handleNewChat = () => { /* ... (Function content omitted for brevity) ... */
         setSearchQuery('');
         setSelectedSubject('All subjects');
         setSelectedDate('All dates');
@@ -196,21 +192,30 @@ const LitPathAI = () => {
         setError(null);
     };
 
-    // --- Functions from Updated ---
+    // --- Functions (Updated Login/Signup Logic with Redirection) ---
     const loginUser = (e) => {
         e.preventDefault();
-        if (email === "test@example.com" && password === "1234") {
-            alert("Login successful!");
+        // 1. Admin Login (Redirects to Dashboard)
+        if (email === "admin@dost.gov.ph" && password === "admin123") {
+            alert("Admin Login successful! Redirecting to dashboard.");
             setShowLogin(false);
-            // Clear fields
             setEmail("");
             setPassword("");
-        } else {
-            alert("Invalid credentials.");
+            navigate('/dashboard'); 
+        }
+        // 2. Regular User Login (Stays on search page)
+        else if (email === "test@example.com" && password === "1234") {
+            alert("User Login successful!");
+            setShowLogin(false);
+            setEmail("");
+            setPassword("");
+        }
+        else {
+            alert("Invalid credentials. Try admin@dost.gov.ph / admin123 or test@example.com / 1234");
         }
     };
 
-    const registerUser = (e) => {
+    const registerUser = (e) => { /* ... (Function content omitted for brevity, identical to previous turn) ... */
         e.preventDefault();
         localStorage.setItem(
             "user",
@@ -218,16 +223,14 @@ const LitPathAI = () => {
         );
         alert("Account created! You can now log in.");
         setIsLoginMode(true);
-        // Clear fields
         setEmail("");
         setPassword("");
         setName("");
     };
 
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-            {/* Header - Merged */}
+            {/* Header */}
             <div className="bg-[#1F1F1F] text-white p-4 shadow-md">
                 <div className="flex items-center justify-between max-w-7xl mx-auto">
                     <div className="flex items-center space-x-4">
@@ -236,7 +239,7 @@ const LitPathAI = () => {
                         <div className="text-sm border-l border-white pl-4 ml-4">LitPath AI: <br /> Smart PathFinder of Theses and Dissertation</div>
                     </div>
 
-                    {/* Navigation / Profile - From Updated */}
+                    {/* Navigation / Profile */}
                     <div className="flex items-center space-x-6 relative">
                         <a
                             href="http://scinet.dost.gov.ph/#/opac"
@@ -273,7 +276,7 @@ const LitPathAI = () => {
                                             <form onSubmit={loginUser} className="space-y-3">
                                                 <input
                                                     type="email"
-                                                    placeholder="Email"
+                                                    placeholder="Email (admin@dost.gov.ph)"
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                     required
@@ -281,7 +284,7 @@ const LitPathAI = () => {
                                                 />
                                                 <input
                                                     type="password"
-                                                    placeholder="Password"
+                                                    placeholder="Password (admin123)"
                                                     value={password}
                                                     onChange={(e) => setPassword(e.target.value)}
                                                     required
@@ -360,7 +363,7 @@ const LitPathAI = () => {
             </div>
 
 
-            {/* Backend Status Indicator - From Original */}
+            {/* Backend Status Indicator */}
             {backendStatus && (
                 <div className={`px-4 py-2 text-center text-sm ${backendStatus.status === 'healthy'
                     ? 'bg-green-100 text-green-800'
@@ -373,9 +376,9 @@ const LitPathAI = () => {
                 </div>
             )}
 
-            {/* Main Content Area - From Original */}
+            {/* Main Content Area */}
             <div className="flex-1 flex justify-center items-start py-10 px-4">
-                {/* Left Container (Sidebar) - From Original */}
+                {/* Left Container (Sidebar) */}
                 <div className="w-80 bg-white bg-opacity-95 rounded-xl shadow-2xl p-6 mr-6 flex-shrink-0 h-auto">
                     <div className="flex items-center space-x-2 mb-6 text-gray-800">
                         <BookOpen className="text-[#1E74BC]" size={24} />
@@ -396,10 +399,10 @@ const LitPathAI = () => {
                     </div>
                 </div>
 
-                {/* Right Container (Main Content) - From Original */}
+                {/* Right Container (Main Content) */}
                 <div className="flex-1 max-w-5xl bg-white bg-opacity-95 rounded-xl shadow-2xl p-8">
                     {!searchResults ? (
-                        // --- Welcome Screen ---
+                        // --- Welcome Screen (Search and Examples) ---
                         <div className="max-w-4xl mx-auto">
                             <div className="text-center mb-10">
                                 <div className="flex items-center justify-center space-x-3 mb-4">
@@ -412,7 +415,7 @@ const LitPathAI = () => {
                                 <p className="text-gray-700 text-lg">Discover easier and faster.</p>
                             </div>
 
-                            {/* Search Box and Filters - From Original */}
+                            {/* Search Box and Filters */}
                             <div className="bg-white rounded-lg shadow-inner p-6 mb-8 border border-gray-200">
                                 <div className="flex items-center space-x-3 mb-4 border border-gray-300 rounded-lg p-2 focus-within:border-blue-500 transition-colors">
                                     <Search className="text-gray-500" size={22} />
@@ -528,7 +531,7 @@ const LitPathAI = () => {
                                 </div>
                             )}
 
-                            {/* Example Questions - From Original */}
+                            {/* Example Questions */}
                             <div className="mt-12">
                                 <h3 className="text-xl font-semibold text-gray-800 mb-5">Example questions</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -625,7 +628,7 @@ const LitPathAI = () => {
                                             onClick={() => setSelectedSource(null)}
                                             className="text-gray-500 hover:text-gray-700 transition-colors text-xl"
                                         >
-                                            ×
+                                            &times;
                                         </button>
                                     </div>
                                     <p className="text-md text-gray-700 mb-4">{selectedSource.author} • {selectedSource.year}</p>
@@ -633,8 +636,8 @@ const LitPathAI = () => {
                                         <h4 className="font-semibold text-lg mb-2 text-gray-800">Abstract:</h4>
                                         <p className="text-base text-gray-700 leading-relaxed">
                                             {selectedSource.abstract
-                                                ?.split(/(?<=\.)\s+/) // split sentences by period + space
-                                                .slice(0, 3)         // shows only 3 lines of abstract
+                                                ?.split(/(?<=\.)\s+/) 
+                                                .slice(0, 3)         
                                                 .join(" ") + (selectedSource.abstract.split(/(?<=\.)\s+/).length > 3 ? " ..." : "")
                                             }
                                         </p>
@@ -689,7 +692,7 @@ const LitPathAI = () => {
             </div>
 
 
-            {/* Overlay for More Details - From Original */}
+            {/* Overlay for More Details */}
             {showOverlay && selectedSource && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
                     <div className="w-full sm:w-1/2 lg:w-50 xl:w-50 bg-white h-full overflow-y-auto shadow-2xl max-h-[90vh]">
@@ -703,12 +706,9 @@ const LitPathAI = () => {
                                     <span>Back</span>
                                 </button>
                                 <div className="flex space-x-4">
-                                    <button className="text-white hover:text-blue-200">
-                                        {/* (Icon placeholder) */}
-                                    </button>
-                                    <button className="text-white hover:text-blue-200">
-                                        {/* (Icon placeholder) */}
-                                    </button>
+                                    {/* Placeholder buttons for action */}
+                                    <button className="text-white hover:text-blue-200">★</button>
+                                    <button className="text-white hover:text-blue-200">🔗</button>
                                 </div>
                             </div>
                             <h2 className="text-2xl font-bold leading-tight">{selectedSource.title}</h2>
@@ -772,6 +772,19 @@ const LitPathAI = () => {
                 </div>
             )}
         </div>
+    );
+};
+
+
+// --- Main Export Component: Wraps the application with Router ---
+const LitPathAI = () => {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<LitPathSearchUI />} />
+                <Route path="/dashboard" element={<AdminDashboard />} />
+            </Routes>
+        </Router>
     );
 };
 
