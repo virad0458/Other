@@ -10,18 +10,16 @@ import {
     MessageSquare,
     ArrowRight
 } from 'lucide-react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-// NOTE: Adjust the path for your images and AdminDashboard component if needed
-import dostLogo from "./components/images/dost-logo.png"; 
-import AdminDashboard from './components/AdminDashboard'; 
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import dostLogo from "./components/images/dost-logo.png"; // Adjust path as needed
+import AdminDashboard from './components/AdminDashboard'; // Import the new dashboard
 
 // Backend API URL 
 const API_BASE_URL = 'http://localhost:5000';
 
-// --- LitPath Search UI Component (This is where the login and navigation logic lives) ---
-// This component must be inside the <Router> which is handled in the main LitPathAI component below.
+// --- Nested Component: Contains the main LitPath Search UI ---
 const LitPathSearchUI = () => {
-    // --- State and Refs (omitted unchanged parts for brevity) ---
+    // --- State from Original ---
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedSubject, setSelectedSubject] = useState('All subjects');
     const [selectedDate, setSelectedDate] = useState('All dates');
@@ -32,6 +30,7 @@ const LitPathSearchUI = () => {
     const [searchResults, setSearchResults] = useState(null);
     const [selectedSource, setSelectedSource] = useState(null);
     const [showOverlay, setShowOverlay] = useState(false);
+    const [rating, setRating] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [backendStatus, setBackendStatus] = useState(null);
@@ -43,6 +42,7 @@ const LitPathSearchUI = () => {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
 
+    // --- Data from Original (Constants) ---
     const subjects = [
         "All subjects", "Agriculture", "Anthropology", "Applied Sciences", "Architecture",
         "Arts and Humanities", "Biological Sciences", "Business", "Chemistry",
@@ -55,17 +55,18 @@ const LitPathSearchUI = () => {
     const dateOptions = ['All dates', 'Last year', 'Last 3 years', 'Custom date range'];
 
 
+    // --- Refs ---
     const subjectDropdownRef = useRef(null);
     const dateDropdownRef = useRef(null);
     const loginRef = useRef(null);
-    
-    // This MUST be called here, inside a component rendered by the <Router>
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
-    // --- Effects and Helper Functions (checkBackendHealth, handleSearch, etc. are restored) ---
+    // --- Effects ---
     useEffect(() => {
-        // Consolidated useEffect logic from previous versions
         checkBackendHealth();
+    }, []);
+
+    useEffect(() => {
         const handleClickOutside = (event) => {
             if (subjectDropdownRef.current && !subjectDropdownRef.current.contains(event.target)) {
                 setShowSubjectDropdown(false);
@@ -84,7 +85,8 @@ const LitPathSearchUI = () => {
         };
     }, []);
 
-    const checkBackendHealth = async () => { 
+    // --- Functions (Original RAG Logic) ---
+    const checkBackendHealth = async () => { /* ... (Function content omitted for brevity, identical to previous turn) ... */
         try {
             const response = await fetch(`${API_BASE_URL}/health`);
             if (response.ok) {
@@ -99,7 +101,7 @@ const LitPathSearchUI = () => {
         }
     };
 
-    const handleSearch = async (query = searchQuery) => {
+    const handleSearch = async (query = searchQuery) => { /* ... (Function content omitted for brevity, identical to previous turn) ... */
         if (!query.trim()) {
             setError("Please enter a research question.");
             return;
@@ -136,7 +138,7 @@ const LitPathSearchUI = () => {
             const data = await response.json();
             const { overview, documents, related_questions } = data;
 
-            const formattedSources = data.documents.map((doc, index) => ({
+            const formattedSources = documents.map((doc, index) => ({
                 id: index + 1,
                 title: doc.title || '[Unknown Title]',
                 author: doc.author || '[Unknown Author]',
@@ -163,20 +165,20 @@ const LitPathSearchUI = () => {
         }
     };
 
-    const handleExampleQuestionClick = (question) => { 
+    const handleExampleQuestionClick = (question) => { /* ... (Function content omitted for brevity) ... */
         setSearchQuery(question);
         handleSearch(question);
     };
 
-    const handleSourceClick = (source) => { 
+    const handleSourceClick = (source) => { /* ... (Function content omitted for brevity) ... */
         setSelectedSource(source);
     };
 
-    const handleMoreDetails = () => { 
+    const handleMoreDetails = () => { /* ... (Function content omitted for brevity) ... */
         setShowOverlay(true);
     };
 
-    const handleNewChat = () => { 
+    const handleNewChat = () => { /* ... (Function content omitted for brevity) ... */
         setSearchQuery('');
         setSelectedSubject('All subjects');
         setSelectedDate('All dates');
@@ -185,11 +187,12 @@ const LitPathSearchUI = () => {
         setSearchResults(null);
         setSelectedSource(null);
         setShowOverlay(false);
+        setRating(0);
         setLoading(false);
         setError(null);
     };
-    
-    // --- Login Logic with Navigation ---
+
+    // --- Functions (Updated Login/Signup Logic with Redirection) ---
     const loginUser = (e) => {
         e.preventDefault();
         // 1. Admin Login (Redirects to Dashboard)
@@ -198,7 +201,6 @@ const LitPathSearchUI = () => {
             setShowLogin(false);
             setEmail("");
             setPassword("");
-            // 🐛 FIX: The useNavigate hook ensures a full page navigation 
             navigate('/dashboard'); 
         }
         // 2. Regular User Login (Stays on search page)
@@ -213,7 +215,7 @@ const LitPathSearchUI = () => {
         }
     };
 
-    const registerUser = (e) => {
+    const registerUser = (e) => { /* ... (Function content omitted for brevity, identical to previous turn) ... */
         e.preventDefault();
         localStorage.setItem(
             "user",
@@ -232,7 +234,6 @@ const LitPathSearchUI = () => {
             <div className="bg-[#1F1F1F] text-white p-4 shadow-md">
                 <div className="flex items-center justify-between max-w-7xl mx-auto">
                     <div className="flex items-center space-x-4">
-                        {/* Ensure your logo path is correct here */}
                         <img src={dostLogo} alt="DOST SciNet-Phil Logo" className="h-12 w-50" />
                         <div className="text-xl font-bold">DOST UNION CATALOG</div>
                         <div className="text-sm border-l border-white pl-4 ml-4">LitPath AI: <br /> Smart PathFinder of Theses and Dissertation</div>
@@ -248,7 +249,7 @@ const LitPathSearchUI = () => {
                         >
                             Online Public Access Catalog
                         </a>
-                        <a href="/" className="font-bold text-blue-200">
+                        <a href="#" className="font-bold text-blue-200">
                             LitPath AI
                         </a>
 
@@ -780,10 +781,7 @@ const LitPathAI = () => {
     return (
         <Router>
             <Routes>
-                {/* The root route renders the main search UI */}
                 <Route path="/" element={<LitPathSearchUI />} />
-                
-                {/* The dashboard route renders the new AdminDashboard component */}
                 <Route path="/dashboard" element={<AdminDashboard />} />
             </Routes>
         </Router>

@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Title } from 'chart.js';
-import { Award, TrendingUp, BookOpen, Clock, Users, Database } from 'lucide-react';
+import { Award, BookOpen, Users, RefreshCw, MessageSquare, Clock, ArrowLeft } from 'lucide-react';
+//                 ^ ADDED THIS HERE
 import dostLogo from "./images/dost-logo.png"; // Assuming it's in src/components/images
 
 // Register Chart.js components
@@ -25,8 +26,7 @@ const AdminDashboard = () => {
             { name: 'APA', count: 3500, percentage: '45%' },
             { name: 'MLA', count: 2400, percentage: '30%' },
             { name: 'Chicago', count: 1000, percentage: '12%' },
-            { name: 'Harvard', count: 600, percentage: '8%' },
-            { name: 'Others', count: 500, percentage: '5%' },
+            { name: 'IEEE', count: 600, percentage: '8%' },
         ],
         thesisCategoriesDistribution: {
             labels: ['Computer Science', 'Environmental Science', 'Business', 'Education', 'Others'],
