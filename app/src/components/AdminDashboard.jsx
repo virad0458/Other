@@ -1,16 +1,13 @@
-// src/components/AdminDashboard.js
 import React, { useState, useEffect } from 'react';
 import { Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Title } from 'chart.js';
-import { Award, BookOpen, Users, RefreshCw, MessageSquare, Clock, ArrowLeft } from 'lucide-react';
-//                 ^ ADDED THIS HERE
+import { Award, BookOpen, Users, RefreshCw, MessageSquare } from 'lucide-react'; // Removed Clock, ArrowLeft
+
 import dostLogo from "./images/dost-logo.png"; // Assuming it's in src/components/images
 
-// Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Title);
 
 const AdminDashboard = () => {
-    // Simulated Data (replace with API calls when you have a backend)
     const [dashboardData, setDashboardData] = useState({
         usageMetrics: {
             totalSearches: 47892,
@@ -160,28 +157,21 @@ const AdminDashboard = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-sans">
-            {/* Header */}
+            {/* Header - EXACTLY AS REQUESTED */}
             <div className="bg-[#1F1F1F] text-white p-4 shadow-md">
                 <div className="flex items-center justify-between max-w-7xl mx-auto">
                     <div className="flex items-center space-x-4">
-                        <img src={dostLogo} alt="DOST Logo" className="h-12" />
-                        <div className="text-xl font-bold">Thesis Analytics Dashboard</div>
-                        <div className="text-sm border-l border-white pl-4 ml-4">
-                            Manager usage patterns and engagement analytics
-                        </div>
+                        <img src={dostLogo} alt="DOST SciNet-Phil Logo" className="h-12 w-50" />
+                        <div className="text-xl font-bold">DOST UNION CATALOG</div>
+                        <div className="text-sm border-l border-white pl-4 ml-4">LitPath AI: <br />Smart PathFinder of Theses and Dissertation</div>
                     </div>
-                    <div className="flex items-center space-x-4">
-                        <span className="text-sm text-gray-300">Last 7 days</span>
-                        <select className="bg-[#155a8f] text-white p-2 rounded-md text-sm">
-                            <option>Last 7 days</option>
-                            <option>Last 30 days</option>
-                            <option>Last 90 days</option>
-                        </select>
-                        <button className="bg-[#1E74BC] text-white px-4 py-2 rounded-md hover:bg-[#155a8f] transition-colors flex items-center space-x-2">
-                            <RefreshCw size={16} />
-                            <span>Refresh</span>
-                        </button>
-                    </div>
+                    <nav className="flex space-x-6">
+                        <a href="http://scinet.dost.gov.ph/#/opac" target="_blank" rel="noopener noreferrer" className="hover:text-blue-200 transition-colors">Online Public Access Catalog</a>
+                        <a href="/" className="font-bold text-blue-200 hover:text-blue-100 transition-colors">LitPath AI</a> {/* Updated href to '/' for home navigation */}
+                        <a href="#" className="flex items-center hover:text-blue-200 transition-colors">
+                            {/* Empty anchor tag content as per request */}
+                        </a>
+                    </nav>
                 </div>
             </div>
 
@@ -285,7 +275,8 @@ const AdminDashboard = () => {
                                 <p className="text-sm text-gray-600 mb-2">{thesis.authors}</p>
                                 <div className="flex flex-wrap items-center text-sm text-gray-500 mb-2">
                                     <span className="flex items-center mr-4"><Award size={14} className="mr-1 text-yellow-500" /> {thesis.citations}</span>
-                                    <span className="flex items-center mr-4"><Clock size={14} className="mr-1 text-gray-400" /> {thesis.views}</span>
+                                    {/* Note: Clock icon was removed from imports, replacing with a placeholder for views */}
+                                    <span className="flex items-center mr-4"><BookOpen size={14} className="mr-1 text-gray-400" /> {thesis.views}</span>
                                     {thesis.tags.map((tag, tagIndex) => (
                                         <span key={tagIndex} className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full mr-2 mb-1">{tag}</span>
                                     ))}

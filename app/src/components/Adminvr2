@@ -1,0 +1,219 @@
+import React, { useState, useMemo } from 'react';
+import { Line, Pie } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    ArcElement,
+    Tooltip,
+    Legend,
+    Title
+} from 'chart.js';
+
+import { Award, BookOpen, Users, MessageSquare, Clock, ArrowLeft, RefreshCw, User } from 'lucide-react'; 
+import { useNavigate } from 'react-router-dom';
+import dostLogo from "./images/dost-logo.png"; 
+
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Title);
+
+
+const MOCK_DATA = {
+    totalDocuments: 1540,
+    totalUsers: 450,
+    pendingRequests: 12,
+    latestActivity: [
+        { id: 1, user: 'J. Dela Cruz', action: 'Requested "AI Ethics"', time: '2 mins ago' },
+        { id: 2, user: 'M. Santos', action: 'Logged in', time: '1 hour ago' },
+        { id: 3, user: 'A. Reyes', action: 'Approved "Climate Change"', time: '3 hours ago' },
+    ],
+    searchVolume: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        data: [120, 150, 180, 200, 250, 230, 260, 290, 310, 350, 320, 380],
+    },
+    documentSubjects: {
+        labels: ['Computer Science', 'Environmental Sci', 'Medicine', 'Agriculture', 'Engineering', 'Others'],
+        data: [350, 250, 180, 150, 120, 490],
+    }
+};
+
+const AdminDashboard = () => {
+    const navigate = useNavigate();
+    const [stats, setStats] = useState(MOCK_DATA);
+
+    const handleGoHome = () => {
+        navigate('/');
+    };
+
+    // Chart data setup (uses useMemo for performance)
+    const searchVolumeData = useMemo(() => ({
+        labels: stats.searchVolume.labels,
+        datasets: [{
+            label: 'Search Volume',
+            data: stats.searchVolume.data,
+            borderColor: '#1E74BC',
+            backgroundColor: 'rgba(30, 116, 188, 0.5)',
+            tension: 0.4,
+            pointBackgroundColor: '#1E74BC',
+        }],
+    }), [stats.searchVolume]);
+
+    const documentSubjectsData = useMemo(() => ({
+        labels: stats.documentSubjects.labels,
+        datasets: [{
+            data: stats.documentSubjects.data,
+            backgroundColor: [
+                '#1E74BC',
+                '#3AB795',
+                '#FF6384',
+                '#FF9F40',
+                '#4BC0C0',
+                '#9966FF',
+            ],
+        }],
+    }), [stats.documentSubjects]);
+
+    // Card Component
+    const StatCard = ({ title, value, icon: Icon, color }) => (
+        <div className={`bg-white p-6 rounded-xl shadow-lg border-l-4 ${color} flex items-center justify-between`}>
+            <div>
+                <p className="text-sm font-medium text-gray-500">{title}</p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-1">{value}</h3>
+            </div>
+            {/* The color prop is passed as a Tailwind border color class, so we use string manipulation to extract a color for the icon styling for visual effect */}
+            <Icon size={36} className={`text-opacity-80`} style={{ color: color.replace('border-', '') }} />
+        </div>
+    );
+
+    return (
+        <div className="min-h-screen bg-gray-50">
+            {/* --- INTEGRATED HEADER FROM HOMEPAGE --- */}
+            <div className="bg-[#1F1F1F] text-white p-4 shadow-md">
+                <div className="flex items-center justify-between max-w-7xl mx-auto">
+                    {/* Left Side: Logo and Title */}
+                    <div className="flex items-center space-x-4">
+                        {/* Make the Logo clickable */}
+                        <div className="cursor-pointer" onClick={handleGoHome}>
+                            <img src={dostLogo} alt="DOST SciNet-Phil Logo" className="h-12 w-50" />
+                        </div>
+                        <div className="text-xl font-bold">DOST UNION CATALOG</div>
+                        
+                        {/* Make this specific part clickable */}
+                        <div 
+                            className="text-sm border-l border-white pl-4 ml-4 cursor-pointer" 
+                            onClick={handleGoHome}
+                        >
+                            LitPath AI: <br /> Smart PathFinder of Theses and Dissertation
+                        </div>
+                    </div>
+
+                    {/* Right Side: Dashboard Navigation/Logout (Appropriate for admin view) */}
+                    <div className="flex items-center space-x-6 relative">
+                        <span className="font-bold text-blue-200">
+                            Admin Dashboard
+                        </span>
+                        <button 
+                            onClick={() => navigate('/')} 
+                            className="bg-white text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2"
+                        >
+                            <ArrowLeft size={20} />
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {/* -------------------------------------- */}
+
+            <div className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+                <header className="mb-8 flex justify-between items-center">
+                    <h1 className="text-3xl font-bold text-gray-900">System Overview Dashboard</h1>
+                    <button 
+                        onClick={() => setStats(MOCK_DATA)} // Simple refresh for mock data
+                        className="bg-[#1E74BC] text-white py-2 px-4 rounded-lg hover:bg-[#155a8f] transition-colors flex items-center space-x-2"
+                    >
+                        <RefreshCw size={18} />
+                        <span>Refresh Data</span>
+                    </button>
+                </header>
+
+                {/* Stat Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                    <StatCard 
+                        title="Total Documents" 
+                        value={stats.totalDocuments.toLocaleString()} 
+                        icon={BookOpen} 
+                        color="border-blue-500" 
+                    />
+                    <StatCard 
+                        title="Total Registered Users" 
+                        value={stats.totalUsers.toLocaleString()} 
+                        icon={Users} 
+                        color="border-green-500" 
+                    />
+                    <StatCard 
+                        title="Pending Requests" 
+                        value={stats.pendingRequests} 
+                        icon={MessageSquare} 
+                        color="border-yellow-500" 
+                    />
+                    <StatCard 
+                        title="Average Session Time" 
+                        value="12 min" 
+                        icon={Clock} 
+                        color="border-red-500" 
+                    />
+                </div>
+
+                {/* Charts and Activity */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Search Volume Chart */}
+                    <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+                        <h2 className="text-xl font-semibold text-gray-800 mb-4">Monthly Search Volume</h2>
+                        <Line data={searchVolumeData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
+                    </div>
+
+                    {/* Document Subjects Chart */}
+                    <div className="bg-white p-6 rounded-xl shadow-lg">
+                        <h2 className="text-xl font-semibold text-gray-800 mb-4">Document Distribution by Subject</h2>
+                        <div className="h-64 flex items-center justify-center">
+                            <Pie 
+                                data={documentSubjectsData} 
+                                options={{ responsive: true, maintainAspectRatio: false }} 
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Latest Activity Table */}
+                <div className="mt-6 bg-white p-6 rounded-xl shadow-lg">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4">Latest System Activity</h2>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr className="bg-gray-50">
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {stats.latestActivity.map((activity) => (
+                                    <tr key={activity.id}>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{activity.user}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{activity.action}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{activity.time}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    );
+};
+
+export default AdminDashboard;

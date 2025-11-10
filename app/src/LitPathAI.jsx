@@ -54,7 +54,6 @@ const LitPathSearchUI = () => {
     ];
     const dateOptions = ['All dates', 'Last year', 'Last 3 years', 'Custom date range'];
 
-
     // --- Refs ---
     const subjectDropdownRef = useRef(null);
     const dateDropdownRef = useRef(null);
@@ -362,7 +361,6 @@ const LitPathSearchUI = () => {
                 </div>
             </div>
 
-
             {/* Backend Status Indicator */}
             {backendStatus && (
                 <div className={`px-4 py-2 text-center text-sm ${backendStatus.status === 'healthy'
@@ -436,82 +434,9 @@ const LitPathSearchUI = () => {
                                     </button>
                                 </div>
                                 
-                                {/* --- FILTERS --- */}
-                                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                                    {/* Subject Filter */}
-                                    <div className="relative w-full md:w-1/2" ref={subjectDropdownRef}>
-                                        <button
-                                            onClick={() => setShowSubjectDropdown(!showSubjectDropdown)}
-                                            className="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-left flex justify-between items-center hover:bg-gray-200 transition-colors"
-                                        >
-                                            <span className="text-gray-700 truncate">{selectedSubject}</span>
-                                            <ChevronDown size={20} className={`text-gray-500 transition-transform ${showSubjectDropdown ? 'rotate-180' : ''}`} />
-                                        </button>
-                                        {showSubjectDropdown && (
-                                            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                                                {subjects.map((subject, index) => (
-                                                    <div
-                                                        key={index}
-                                                        onClick={() => {
-                                                            setSelectedSubject(subject);
-                                                            setShowSubjectDropdown(false);
-                                                        }}
-                                                        className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-gray-800"
-                                                    >
-                                                        {subject}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                    {/* Date Filter */}
-                                    <div className="relative w-full md:w-1/2" ref={dateDropdownRef}>
-                                        <button
-                                            onClick={() => setShowDateDropdown(!showDateDropdown)}
-                                            className="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-left flex justify-between items-center hover:bg-gray-200 transition-colors"
-                                        >
-                                            <span className="text-gray-700">{selectedDate}</span>
-                                            <ChevronDown size={20} className={`text-gray-500 transition-transform ${showDateDropdown ? 'rotate-180' : ''}`} />
-                                        </button>
-                                        {showDateDropdown && (
-                                            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                                                {dateOptions.map((option, index) => (
-                                                    <div
-                                                        key={index}
-                                                        onClick={() => {
-                                                            setSelectedDate(option);
-                                                            setShowDateDropdown(false);
-                                                        }}
-                                                        className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-gray-800"
-                                                    >
-                                                        {option}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                {/* Custom Date Range */}
-                                {selectedDate === 'Custom date range' && (
-                                    <div className="flex space-x-4 mt-4">
-                                        <input
-                                            type="number"
-                                            placeholder="From (Year)"
-                                            value={fromYear}
-                                            onChange={(e) => setFromYear(e.target.value)}
-                                            className="w-1/2 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:border-blue-500"
-                                        />
-                                        <input
-                                            type="number"
-                                            placeholder="To (Year)"
-                                            value={toYear}
-                                            onChange={(e) => setToYear(e.target.value)}
-                                            className="w-1/2 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:border-blue-500"
-                                        />
-                                    </div>
-                                )}
+                                
+                                
                             </div>
-
 
                             {loading && (
                                 <div className="text-center text-[#1E74BC] text-lg mt-8">
@@ -520,16 +445,7 @@ const LitPathSearchUI = () => {
                                 </div>
                             )}
 
-                            {error && (
-                                <div className="text-center text-red-600 text-lg mt-8 p-4 bg-red-50 rounded-lg border border-red-200">
-                                    {error}
-                                    {backendStatus?.status === 'error' && (
-                                        <div className="mt-2 text-sm">
-                                            Make sure your backend is running on {API_BASE_URL}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
+                            
 
                             {/* Example Questions */}
                             <div className="mt-12">
@@ -691,7 +607,6 @@ const LitPathSearchUI = () => {
                 </div>
             </div>
 
-
             {/* Overlay for More Details */}
             {showOverlay && selectedSource && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
@@ -775,7 +690,6 @@ const LitPathSearchUI = () => {
     );
 };
 
-
 // --- Main Export Component: Wraps the application with Router ---
 const LitPathAI = () => {
     return (
@@ -789,3 +703,4 @@ const LitPathAI = () => {
 };
 
 export default LitPathAI;
+
