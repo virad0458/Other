@@ -252,13 +252,13 @@ const LitPathAI = () => {
                     </div>
                 </div>
 
-                {/* Right Container (Main Content) - MODIFIED: Added 'relative' class */}
+                {/* Right Container (Main Content) */}
                 <div className="flex-1 max-w-5xl bg-white bg-opacity-95 rounded-xl shadow-2xl p-8 relative">
                     
-                    {/* LOGIN PROFILE PLACE - ADDED HERE */}
+                    {/* Login Profile */}
                     <div className="absolute top-6 right-6 z-10">
                         <button 
-                            onClick={handleProfileClick} // <--- CHANGE THIS LINE
+                            onClick={handleProfileClick} 
                             className="p-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors shadow-md"
                             title="Login/Profile"
                         >
