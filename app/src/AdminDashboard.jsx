@@ -89,7 +89,7 @@ const AdminDashboard = () => {
                         {/* Using Link for home page redirection as requested */}
                         <Link
                             to="/"
-                            className="font-bold text-blue-200 hover:underline transition-colors"
+                            className="font-bold text-blue-200 hover: transition-colors"
                         >
                             LitPath AI
                         </Link>
