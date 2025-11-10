@@ -1,24 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-    Search,
-    ChevronDown,
-    Star,
-    RefreshCw,
-    BookOpen,
-    User,
-    Calendar,
-    MessageSquare,
-    ArrowRight
-} from 'lucide-react';
+import { Search, ChevronDown, Star, RefreshCw, BookOpen, User, Calendar, MessageSquare, ArrowRight } from 'lucide-react';
 import dostLogo from "./components/images/dost-logo.png";
-
 
 // Backend API URL 
 const API_BASE_URL = 'http://localhost:5000';
 
-
 const LitPathAI = () => {
-    // --- State from Original ---
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedSubject, setSelectedSubject] = useState('All subjects');
     const [selectedDate, setSelectedDate] = useState('All dates');
@@ -34,50 +21,56 @@ const LitPathAI = () => {
     const [error, setError] = useState(null);
     const [backendStatus, setBackendStatus] = useState(null);
 
-    // --- State from Updated (for Login/Signup) ---
-    const [showLogin, setShowLogin] = useState(false);
-    const [isLoginMode, setIsLoginMode] = useState(true); // toggle login/signup
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
-
-    // --- Data from Original ---
     const subjects = [
-        "All subjects", "Agriculture", "Anthropology", "Applied Sciences", "Architecture",
-        "Arts and Humanities", "Biological Sciences", "Business", "Chemistry",
-        "Communication and Media", "Computer Science", "Cultural Studies", "Economics",
-        "Education", "Engineering", "Environmental Science", "Geography", "History",
-        "Law", "Library and Information Science", "Linguistics", "Literature",
-        "Mathematics", "Medicine and Health Sciences", "Philosophy", "Physics",
-        "Political Science", "Psychology", "Social Sciences", "Sociology",
+        "All subjects",
+        "Agriculture",
+        "Anthropology",
+        "Applied Sciences",
+        "Architecture",
+        "Arts and Humanities",
+        "Biological Sciences",
+        "Business",
+        "Chemistry",
+        "Communication and Media",
+        "Computer Science",
+        "Cultural Studies",
+        "Economics",
+        "Education",
+        "Engineering",
+        "Environmental Science",
+        "Geography",
+        "History",
+        "Law",
+        "Library and Information Science",
+        "Linguistics",
+        "Literature",
+        "Mathematics",
+        "Medicine and Health Sciences",
+        "Philosophy",
+        "Physics",
+        "Political Science",
+        "Psychology",
+        "Social Sciences",
+        "Sociology",
     ];
     const dateOptions = ['All dates', 'Last year', 'Last 3 years', 'Custom date range'];
 
-
-    // --- Refs from Original ---
+    // Refs for dropdowns to close when clicking outside
     const subjectDropdownRef = useRef(null);
     const dateDropdownRef = useRef(null);
-    // --- Ref from Updated ---
-    const loginRef = useRef(null);
 
-    // --- useEffect from Original (Health Check) ---
+    // Check backend health on component mount
     useEffect(() => {
         checkBackendHealth();
     }, []);
 
-    // --- Merged useEffect (Click Outside) ---
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Original logic
             if (subjectDropdownRef.current && !subjectDropdownRef.current.contains(event.target)) {
                 setShowSubjectDropdown(false);
             }
             if (dateDropdownRef.current && !dateDropdownRef.current.contains(event.target)) {
                 setShowDateDropdown(false);
-            }
-            // Updated logic
-            if (loginRef.current && !loginRef.current.contains(event.target)) {
-                setShowLogin(false);
             }
         };
 
@@ -85,9 +78,8 @@ const LitPathAI = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []); // Dependencies are correct, they shouldn't include refs
+    }, []);
 
-    // --- Functions from Original ---
     const checkBackendHealth = async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/health`);
@@ -109,6 +101,7 @@ const LitPathAI = () => {
             return;
         }
 
+        // Check if backend is available
         if (!backendStatus || backendStatus.status === 'error') {
             setError("Backend service is not available. Please check if the server is running.");
             return;
@@ -142,6 +135,7 @@ const LitPathAI = () => {
             const data = await response.json();
             const { overview, documents, related_questions } = data;
 
+            // Format documents for frontend, mapping backend fields exactly
             const formattedSources = documents.map((doc, index) => ({
                 id: index + 1,
                 title: doc.title || '[Unknown Title]',
@@ -151,7 +145,7 @@ const LitPathAI = () => {
                 fullTextPath: doc.file || '',
                 degree: doc.degree || 'Thesis',
                 subjects: doc.subjects || ['Research'],
-                school: doc.university || '[Unknown University]',
+                school:  doc.university|| '[Unknown University]',
             }));
 
             setSearchResults({
@@ -196,38 +190,11 @@ const LitPathAI = () => {
         setError(null);
     };
 
-    // --- Functions from Updated ---
-    const loginUser = (e) => {
-        e.preventDefault();
-        if (email === "test@example.com" && password === "1234") {
-            alert("Login successful!");
-            setShowLogin(false);
-            // Clear fields
-            setEmail("");
-            setPassword("");
-        } else {
-            alert("Invalid credentials.");
-        }
-    };
-
-    const registerUser = (e) => {
-        e.preventDefault();
-        localStorage.setItem(
-            "user",
-            JSON.stringify({ name, email, password })
-        );
-        alert("Account created! You can now log in.");
-        setIsLoginMode(true);
-        // Clear fields
-        setEmail("");
-        setPassword("");
-        setName("");
-    };
 
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-            {/* Header - Merged */}
+            {/* Header */}
             <div className="bg-[#1F1F1F] text-white p-4 shadow-md">
                 <div className="flex items-center justify-between max-w-7xl mx-auto">
                     <div className="flex items-center space-x-4">
@@ -235,136 +202,21 @@ const LitPathAI = () => {
                         <div className="text-xl font-bold">DOST UNION CATALOG</div>
                         <div className="text-sm border-l border-white pl-4 ml-4">LitPath AI: <br /> Smart PathFinder of Theses and Dissertation</div>
                     </div>
-
-                    {/* Navigation / Profile - From Updated */}
-                    <div className="flex items-center space-x-6 relative">
-                        <a
-                            href="http://scinet.dost.gov.ph/#/opac"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-blue-200 transition-colors"
-                        >
-                            Online Public Access Catalog
+                    <nav className="flex space-x-6">
+                        <a href="http://scinet.dost.gov.ph/#/opac" target="_blank" rel="noopener noreferrer" className="hover:text-blue-200 transition-colors"> Online Public Access Catalog</a>
+                        <a href="#" className="font-bold text-blue-200">LitPath AI</a>
+                        <a href="#" className="flex items-center hover:text-blue-200 transition-colors">
                         </a>
-                        <a href="#" className="font-bold text-blue-200">
-                            LitPath AI
-                        </a>
-
-                        {/* Profile Icon */}
-                        <div className="relative">
-                            <button
-                                onClick={() => setShowLogin(!showLogin)}
-                                className="bg-white text-[#1E74BC] rounded-full p-2 hover:bg-gray-200 transition-colors"
-                            >
-                                <User size={24} />
-                            </button>
-
-                            {/* Login / Signup Popup */}
-                            {showLogin && (
-                                <div
-                                    ref={loginRef}
-                                    className="absolute right-0 mt-2 w-72 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-50"
-                                >
-                                    {isLoginMode ? (
-                                        <>
-                                            <h2 className="text-lg font-bold mb-4 text-gray-800">
-                                                Login
-                                            </h2>
-                                            <form onSubmit={loginUser} className="space-y-3">
-                                                <input
-                                                    type="email"
-                                                    placeholder="Email"
-                                                    value={email}
-                                                    onChange={(e) => setEmail(e.target.value)}
-                                                    required
-                                                    className="w-full border border-gray-300 rounded-md p-2 text-black placeholder-gray-400 focus:outline-none focus:border-[#1E74BC]"
-                                                />
-                                                <input
-                                                    type="password"
-                                                    placeholder="Password"
-                                                    value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
-                                                    required
-                                                    className="w-full border border-gray-300 rounded-md p-2 text-black placeholder-gray-400 focus:outline-none focus:border-[#1E74BC]"
-                                                />
-                                                <button
-                                                    type="submit"
-                                                    className="w-full bg-[#1E74BC] text-white py-2 rounded-md hover:bg-[#155a8f] transition-colors"
-                                                >
-                                                    Login
-                                                </button>
-                                            </form>
-                                            <p className="text-sm mt-3 text-gray-600">
-                                                Don’t have an account?{" "}
-                                                <span
-                                                    className="text-blue-600 hover:underline cursor-pointer"
-                                                    onClick={() => setIsLoginMode(false)}
-                                                >
-                                                    Sign up
-                                                </span>
-                                            </p>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <h2 className="text-lg font-bold mb-4 text-gray-800">
-                                                Sign Up
-                                            </h2>
-                                            <form onSubmit={registerUser} className="space-y-3">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Full Name"
-                                                    value={name}
-                                                    onChange={(e) => setName(e.target.value)}
-                                                    required
-                                                    className="w-full border border-gray-300 rounded-md p-2 text-black placeholder-gray-400 focus:outline-none focus:border-[#1E74BC]"
-                                                />
-                                                <input
-                                                    type="email"
-                                                    placeholder="Email"
-                                                    value={email}
-                                                    onChange={(e) => setEmail(e.target.value)}
-                                                    required
-                                                    className="w-full border border-gray-300 rounded-md p-2 text-black placeholder-gray-400 focus:outline-none focus:border-[#1E74BC]"
-                                                />
-                                                <input
-                                                    type="password"
-                                                    placeholder="Password"
-                                                    value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
-                                                    required
-                                                    className="w-full border border-gray-300 rounded-md p-2 text-black placeholder-gray-400 focus:outline-none focus:border-[#1E74BC]"
-                                                />
-                                                <button
-                                                    type="submit"
-                                                    className="w-full bg-[#1E74BC] text-white py-2 rounded-md hover:bg-[#155a8f] transition-colors"
-                                                >
-                                                    Create Account
-                                                </button>
-                                            </form>
-                                            <p className="text-sm mt-3 text-gray-600">
-                                                Already have an account?{" "}
-                                                <span
-                                                    className="text-blue-600 hover:underline cursor-pointer"
-                                                    onClick={() => setIsLoginMode(true)}
-                                                >
-                                                    Log in
-                                                </span>
-                                            </p>
-                                        </>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    </nav>
                 </div>
             </div>
 
-
-            {/* Backend Status Indicator - From Original */}
+            {/* Backend Status Indicator */}
             {backendStatus && (
-                <div className={`px-4 py-2 text-center text-sm ${backendStatus.status === 'healthy'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-red-100 text-red-800'
+                <div className={`px-4 py-2 text-center text-sm ${
+                    backendStatus.status === 'healthy'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
                     }`}>
                     {backendStatus.status === 'healthy'
                         ? `✓ Backend connected - ${backendStatus.total_documents} documents, ${backendStatus.total_chunks} chunks indexed`
@@ -373,9 +225,8 @@ const LitPathAI = () => {
                 </div>
             )}
 
-            {/* Main Content Area - From Original */}
             <div className="flex-1 flex justify-center items-start py-10 px-4">
-                {/* Left Container (Sidebar) - From Original */}
+                {/* Left Container (Sidebar) */}
                 <div className="w-80 bg-white bg-opacity-95 rounded-xl shadow-2xl p-6 mr-6 flex-shrink-0 h-auto">
                     <div className="flex items-center space-x-2 mb-6 text-gray-800">
                         <BookOpen className="text-[#1E74BC]" size={24} />
@@ -396,10 +247,9 @@ const LitPathAI = () => {
                     </div>
                 </div>
 
-                {/* Right Container (Main Content) - From Original */}
+                {/* Right Container (Main Content) */}
                 <div className="flex-1 max-w-5xl bg-white bg-opacity-95 rounded-xl shadow-2xl p-8">
                     {!searchResults ? (
-                        // --- Welcome Screen ---
                         <div className="max-w-4xl mx-auto">
                             <div className="text-center mb-10">
                                 <div className="flex items-center justify-center space-x-3 mb-4">
@@ -412,7 +262,7 @@ const LitPathAI = () => {
                                 <p className="text-gray-700 text-lg">Discover easier and faster.</p>
                             </div>
 
-                            {/* Search Box and Filters - From Original */}
+                            {/* Search Box and Filters */}
                             <div className="bg-white rounded-lg shadow-inner p-6 mb-8 border border-gray-200">
                                 <div className="flex items-center space-x-3 mb-4 border border-gray-300 rounded-lg p-2 focus-within:border-blue-500 transition-colors">
                                     <Search className="text-gray-500" size={22} />
@@ -432,83 +282,7 @@ const LitPathAI = () => {
                                         <ArrowRight size={20} />
                                     </button>
                                 </div>
-                                
-                                {/* --- FILTERS --- */}
-                                <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                                    {/* Subject Filter */}
-                                    <div className="relative w-full md:w-1/2" ref={subjectDropdownRef}>
-                                        <button
-                                            onClick={() => setShowSubjectDropdown(!showSubjectDropdown)}
-                                            className="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-left flex justify-between items-center hover:bg-gray-200 transition-colors"
-                                        >
-                                            <span className="text-gray-700 truncate">{selectedSubject}</span>
-                                            <ChevronDown size={20} className={`text-gray-500 transition-transform ${showSubjectDropdown ? 'rotate-180' : ''}`} />
-                                        </button>
-                                        {showSubjectDropdown && (
-                                            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                                                {subjects.map((subject, index) => (
-                                                    <div
-                                                        key={index}
-                                                        onClick={() => {
-                                                            setSelectedSubject(subject);
-                                                            setShowSubjectDropdown(false);
-                                                        }}
-                                                        className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-gray-800"
-                                                    >
-                                                        {subject}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                    {/* Date Filter */}
-                                    <div className="relative w-full md:w-1/2" ref={dateDropdownRef}>
-                                        <button
-                                            onClick={() => setShowDateDropdown(!showDateDropdown)}
-                                            className="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-left flex justify-between items-center hover:bg-gray-200 transition-colors"
-                                        >
-                                            <span className="text-gray-700">{selectedDate}</span>
-                                            <ChevronDown size={20} className={`text-gray-500 transition-transform ${showDateDropdown ? 'rotate-180' : ''}`} />
-                                        </button>
-                                        {showDateDropdown && (
-                                            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                                                {dateOptions.map((option, index) => (
-                                                    <div
-                                                        key={index}
-                                                        onClick={() => {
-                                                            setSelectedDate(option);
-                                                            setShowDateDropdown(false);
-                                                        }}
-                                                        className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-gray-800"
-                                                    >
-                                                        {option}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                {/* Custom Date Range */}
-                                {selectedDate === 'Custom date range' && (
-                                    <div className="flex space-x-4 mt-4">
-                                        <input
-                                            type="number"
-                                            placeholder="From (Year)"
-                                            value={fromYear}
-                                            onChange={(e) => setFromYear(e.target.value)}
-                                            className="w-1/2 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:border-blue-500"
-                                        />
-                                        <input
-                                            type="number"
-                                            placeholder="To (Year)"
-                                            value={toYear}
-                                            onChange={(e) => setToYear(e.target.value)}
-                                            className="w-1/2 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:border-blue-500"
-                                        />
-                                    </div>
-                                )}
                             </div>
-
 
                             {loading && (
                                 <div className="text-center text-[#1E74BC] text-lg mt-8">
@@ -528,36 +302,59 @@ const LitPathAI = () => {
                                 </div>
                             )}
 
-                            {/* Example Questions - From Original */}
+                            {/* Example Questions */}
                             <div className="mt-12">
                                 <h3 className="text-xl font-semibold text-gray-800 mb-5">Example questions</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <button
-                                        onClick={() => handleExampleQuestionClick("How does plastic pollution affect plant growth in farmland?")}
+                                        onClick={() =>
+                                            handleExampleQuestionClick(
+                                                "How does plastic pollution affect plant growth in farmland?"
+                                            )
+                                        }
                                         className="flex items-center justify-between text-left p-5 bg-gray-50 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 text-gray-800 hover:bg-blue-50"
                                     >
-                                        <span className="flex-1 pr-4">How does plastic pollution affect plant growth in farmland?</span>
+                                        <span className="flex-1 pr-4">
+                                            How does plastic pollution affect plant growth in farmland?
+                                        </span>
                                         <ArrowRight size={22} className="text-[#1E74BC] flex-shrink-0" />
                                     </button>
+
                                     <button
-                                        onClick={() => handleExampleQuestionClick("Find research about sleep quality among teenagers")}
+                                        onClick={() =>
+                                            handleExampleQuestionClick("Find research about sleep quality among teenagers")
+                                        }
                                         className="flex items-center justify-between text-left p-5 bg-gray-50 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 text-gray-800 hover:bg-blue-50"
                                     >
-                                        <span className="flex-1 pr-4">Find research about sleep quality among teenagers</span>
+                                        <span className="flex-1 pr-4">
+                                            Find research about sleep quality among teenagers
+                                        </span>
                                         <ArrowRight size={22} className="text-[#1E74BC] flex-shrink-0" />
                                     </button>
+
                                     <button
-                                        onClick={() => handleExampleQuestionClick("How does remote work impact employee productivity?")}
+                                        onClick={() =>
+                                            handleExampleQuestionClick("How does remote work impact employee productivity?")
+                                        }
                                         className="flex items-center justify-between text-left p-5 bg-gray-50 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 text-gray-800 hover:bg-blue-50"
                                     >
-                                        <span className="flex-1 pr-4">How does remote work impact employee productivity?</span>
+                                        <span className="flex-1 pr-4">
+                                            How does remote work impact employee productivity?
+                                        </span>
                                         <ArrowRight size={22} className="text-[#1E74BC] flex-shrink-0" />
                                     </button>
+
                                     <button
-                                        onClick={() => handleExampleQuestionClick("Find recent research about how vitamin D deficiency impact overall health")}
+                                        onClick={() =>
+                                            handleExampleQuestionClick(
+                                                "Find recent research about how vitamin D deficiency impact overall health"
+                                            )
+                                        }
                                         className="flex items-center justify-between text-left p-5 bg-gray-50 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 text-gray-800 hover:bg-blue-50"
                                     >
-                                        <span className="flex-1 pr-4">Find recent research about how vitamin D deficiency impact overall health</span>
+                                        <span className="flex-1 pr-4">
+                                            Find recent research about how vitamin D deficiency impact overall health
+                                        </span>
                                         <ArrowRight size={22} className="text-[#1E74BC] flex-shrink-0" />
                                     </button>
                                 </div>
@@ -565,28 +362,29 @@ const LitPathAI = () => {
 
                         </div>
                     ) : (
-                        // --- Results Screen ---
-                        <div className="max-w-6xl mx-auto">
-                            {/* Search Input (persistent after results) */}
-                            <div className="bg-white rounded-lg shadow-inner p-6 mb-8 border border-gray-200">
-                                <div className="flex items-center space-x-3 mb-4 border border-gray-300 rounded-lg p-2 focus-within:border-blue-500 transition-colors">
-                                    <Search className="text-gray-500" size={22} />
-                                    <input
-                                        type="text"
-                                        placeholder="What is your research question?"
-                                        className="flex-1 outline-none text-gray-800 text-lg py-1"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                                    />
-                                    <button
-                                        onClick={() => handleSearch()}
-                                        className="bg-[#1E74BC] text-white p-3 rounded-lg hover:bg-[#155a8f] transition-colors"
-                                    >
-                                        <ArrowRight size={20} />
-                                    </button>
-                                </div>
-                            </div>
+            <div className="max-w-6xl mx-auto">
+              {/* Search Input (persistent after results) */}
+              <div className="bg-white rounded-lg shadow-inner p-6 mb-8 border border-gray-200">
+                {/* Search Bar */}
+                <div className="flex items-center space-x-3 mb-4 border border-gray-300 rounded-lg p-2 focus-within:border-blue-500 transition-colors">
+                  <Search className="text-gray-500" size={22} />
+                  <input
+                    type="text"
+                    placeholder="What is your research question?"
+                    className="flex-1 outline-none text-gray-800 text-lg py-1"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  />
+                  <button
+                    onClick={() => handleSearch()}
+                    className="bg-[#1E74BC] text-white p-3 rounded-lg hover:bg-[#155a8f] transition-colors"
+                  >
+                    <ArrowRight size={20} />
+                  </button>
+                </div>
+            </div>
+
 
                             {/* Search Results Header */}
                             <div className="mb-6">
@@ -634,7 +432,7 @@ const LitPathAI = () => {
                                         <p className="text-base text-gray-700 leading-relaxed">
                                             {selectedSource.abstract
                                                 ?.split(/(?<=\.)\s+/) // split sentences by period + space
-                                                .slice(0, 3)         // shows only 3 lines of abstract
+                                                .slice(0, 3)          // shows only 3 lines of abstract
                                                 .join(" ") + (selectedSource.abstract.split(/(?<=\.)\s+/).length > 3 ? " ..." : "")
                                             }
                                         </p>
@@ -657,8 +455,8 @@ const LitPathAI = () => {
                                         dangerouslySetInnerHTML={{
                                             __html: searchResults.overview
                                                 ? searchResults.overview.replace(/\[(\d+)\]/g, (_, num) => {
-                                                    return `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1E74BC] text-white text-sm font-semibold mx-1">${num}</span>`;
-                                                })
+                                                      return `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#1E74BC] text-white text-sm font-semibold mx-1">${num}</span>`;
+                                                  })
                                                 : "<i>No overview available.</i>",
                                         }}
                                     ></div>
@@ -688,8 +486,7 @@ const LitPathAI = () => {
                 </div>
             </div>
 
-
-            {/* Overlay for More Details - From Original */}
+            {/* Overlay for More Details */}
             {showOverlay && selectedSource && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
                     <div className="w-full sm:w-1/2 lg:w-50 xl:w-50 bg-white h-full overflow-y-auto shadow-2xl max-h-[90vh]">
@@ -704,10 +501,8 @@ const LitPathAI = () => {
                                 </button>
                                 <div className="flex space-x-4">
                                     <button className="text-white hover:text-blue-200">
-                                        {/* (Icon placeholder) */}
                                     </button>
                                     <button className="text-white hover:text-blue-200">
-                                        {/* (Icon placeholder) */}
                                     </button>
                                 </div>
                             </div>
@@ -748,20 +543,20 @@ const LitPathAI = () => {
                                         })()}
                                     </div>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    <span className="font-semibold text-gray-800">University/College:</span>
-                                    <span>{selectedSource.school}</span>
-                                </div>
+                                    <div className="flex items-center space-x-2">
+                                        <span className="font-semibold text-gray-800">University/College:</span>
+                                        <span>{selectedSource.school}</span>
+                                    </div>
                             </div>
 
-                            <div className="bg-[#1E74BC] text-white p-6 rounded-md shadow-md">
-                                <div className="text-base leading-relaxed">
-                                    <div className="font-semibold">STII Bldg., Gen. Santos Ave., Upper Bicutan,</div>
-                                    <div>Taguig City, Metro Manila, 1631, Philippines</div>
-                                    <div className="mt-3 font-medium">library@stii.dost.gov.ph</div>
-                                    <div className="mt-2 font-medium">Full text available at DOST-STII Library from 8am - 5pm</div>
-                                </div>
+                        <div className="bg-[#1E74BC] text-white p-6 rounded-md shadow-md">
+                            <div className="text-base leading-relaxed">
+                                <div className="font-semibold">STII Bldg., Gen. Santos Ave., Upper Bicutan,</div>
+                                <div>Taguig City, Metro Manila, 1631, Philippines</div>
+                                <div className="mt-3 font-medium">library@stii.dost.gov.ph</div>
+                                <div className="mt-2 font-medium">Full text available at DOST-STII Library from 8am - 5pm</div>
                             </div>
+                        </div>
 
                             <div>
                                 <h3 className="font-semibold text-lg mb-2 mt-6 text-gray-800">ABSTRACT</h3>
@@ -776,3 +571,4 @@ const LitPathAI = () => {
 };
 
 export default LitPathAI;
+
