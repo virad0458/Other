@@ -1,22 +1,21 @@
 import React from 'react';
-// IMPORT Link here along with useNavigate
+
 import { useNavigate, Link } from 'react-router-dom'; 
-import dostLogo from "./components/images/dost-logo.png"; // Assuming the logo path is correct
+import dostLogo from "./components/images/dost-logo.png";
 
 const Login = () => {
     const navigate = useNavigate();
 
     const handleLogin = (e) => {
         e.preventDefault();
-        // Implement your login logic here
         console.log("Admin login attempted. Redirecting to dashboard.");
-        // Ensure the path matches the one defined in App.js
+
         navigate('/admin/dashboard'); 
     };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-            {/* Header - Copied from LitPathAI */}
+            {/* Header */}
             <div className="bg-[#1F1F1F] text-white p-4 shadow-md">
                 <div className="flex items-center justify-between max-w-7xl mx-auto">
                     <div className="flex items-center space-x-4">
@@ -26,7 +25,6 @@ const Login = () => {
                     </div>
                     <nav className="flex space-x-6">
                         <a href="http://scinet.dost.gov.ph/#/opac" target="_blank" rel="noopener noreferrer" className="hover:text-blue-200 transition-colors"> Online Public Access Catalog</a>
-                        {/* Now that Link is imported, this will render correctly */}
                         <Link to="/" className="font-bold text-blue-200">LitPath AI</Link> 
                         <a href="#" className="flex items-center hover:text-blue-200 transition-colors">
                         </a>

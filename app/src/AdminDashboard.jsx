@@ -40,7 +40,7 @@ ChartJS.register(
     Title
 );
 
-// Helper function to format numbers with commas
+// Helper function to format numbers
 const formatNumber = (num) => num.toLocaleString();
 
 const AdminDashboard = () => {
@@ -79,9 +79,8 @@ const AdminDashboard = () => {
         colors: ['#4A90E2', '#7ED321', '#F5A623', '#BD10E0', '#9B9B9B'],
     };
 
-    // --- Chart.js Data and Options Configurations ---
-
-    // 1. Daily Activity Line Chart
+    // Chart.js Data and Options Configurations
+    // Daily Activity Line Chart
     const dailyActivityChartData = {
         labels: dailyActivityTrends.labels,
         datasets: [
@@ -114,7 +113,7 @@ const AdminDashboard = () => {
         },
     };
 
-    // 2. Feedback Volume Line Chart
+    // Feedback Volume Line Chart
     const feedbackVolumeChartData = {
         labels: feedbackVolumeTrends.labels,
         datasets: [
@@ -220,10 +219,10 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                {/* Top Charts and Lists (Daily Activity & Most Cited - 50/50 split) */}
+                {/* Top Charts and Lists */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     
-                    {/* Daily Activity Trend (Line Chart) - UPDATED IMPLEMENTATION */}
+                    {/* Daily Activity Trend */}
                     <div className="bg-white p-6 rounded-xl shadow-lg">
                         <h2 className="font-semibold text-gray-700 mb-3 flex items-center space-x-2">
                             <BarChart2 className="text-blue-600" /> <span>Daily Activity Trends (Last 7 Days)</span>
@@ -234,7 +233,7 @@ const AdminDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Most Cited Theses (Unchanged List) */}
+                    {/* Most Cited Theses */}
                     <div className="bg-white p-6 rounded-xl shadow-lg">
                         <h2 className="font-semibold text-gray-700 mb-3 flex items-center space-x-2">
                             <BookOpen className="text-indigo-600" /> <span>Most Cited Theses</span>
@@ -249,10 +248,9 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                {/* Popular Searches (50%) and Stats Group (50%) */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    
-                    {/* COLUMN 1: Popular Searches (50% Width) */}
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">                    
+                    {/* Popular Searches */}
                     <div className="bg-white p-6 rounded-xl shadow-lg">
                         <h2 className="font-semibold text-gray-700 mb-3 flex items-center space-x-2">
                             <TrendingUp className="text-red-500" /> <span>Popular Searches</span>
@@ -269,7 +267,7 @@ const AdminDashboard = () => {
                         </ul>
                     </div>
 
-                    {/* COLUMN 2: STATS GROUP (50% Width) */}
+                    {/* STATS GROUP */}
                     <div className="flex flex-col gap-4">
                         <div className="grid grid-cols-2 gap-4"> 
                             <StatCard label="Total Views" value={formatNumber(stats.totalViews)} icon={<EyeIcon />} colorClass="text-blue-600" />
@@ -300,10 +298,9 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                {/* Feedback Volume Trends (Line Chart) + Recent Feedback */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     
-                    {/* Feedback Volume Trends (Line Chart) - NEW IMPLEMENTATION */}
+                    {/* Feedback Volume Trends */}
                     <div className="bg-white p-6 rounded-xl shadow-lg">
                         <h2 className="font-semibold text-gray-700 mb-3 flex items-center space-x-2">
                             <TrendingUp className="text-green-600" /> <span>Feedback Volume Trends (Last 7 Days)</span>
@@ -314,7 +311,7 @@ const AdminDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Recent Feedback (List) */}
+                    {/* Recent Feedback */}
                     <div className="bg-white p-6 rounded-xl shadow-lg">
                         <h2 className="font-semibold text-gray-700 mb-3 flex items-center space-x-2">
                             <MessageSquare className="text-indigo-600" /> <span>Recent Feedback & Issues</span>
